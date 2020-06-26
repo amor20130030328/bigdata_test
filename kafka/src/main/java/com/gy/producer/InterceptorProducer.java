@@ -1,11 +1,14 @@
 package com.gy.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-public class CustomProducer {
+public class InterceptorProducer {
 
     public static void main(String[] args) {
 
@@ -27,12 +30,20 @@ public class CustomProducer {
         properties.put("value.serializer",
                 "org.apache.kafka.common.serialization.StringSerializer");
 
+
+        List interceptors = new ArrayList();
+        interceptors.add("com.gy.interceptor.CounterInterceptor");
+        interceptors.add("com.gy.interceptor.TimeInterceptor");
+
+        //添加拦截器
+        properties.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,interceptors);
+
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
-        for (int i = 0; i <10000 ; i++) {
-            producer.send(new ProducerRecord<>("second",Integer.toString(i),Integer.toString(i)));
+        for (int i = 0; i <10 ; i++) {
+            producer.send(new ProducerRecord<>("first",Integer.toString(i),Integer.toString(i)));
         }
 
-        producer.close();
+        //producer.close();
 
     }
 }
