@@ -1,4 +1,4 @@
-package com.gy.collection
+package com.gy.collection.queue
 
 object QueueTest {
   def main(args: Array[String]): Unit = {
